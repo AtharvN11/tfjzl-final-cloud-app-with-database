@@ -70,14 +70,9 @@ class Choice(models.Model):
 
 
 class Submission(models.Model):
-    learner = models.ForeignKey(
-        Learner,
-        on_delete=models.CASCADE
-    )
-    exam = models.ForeignKey(
-        Course,
-        on_delete=models.CASCADE
-    )
+    learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Course, on_delete=models.CASCADE)
+    choices = models.ManyToManyField(Choice)
     total_score = models.IntegerField(default=0)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
