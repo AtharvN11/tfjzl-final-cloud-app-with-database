@@ -33,8 +33,7 @@ class Course(models.Model):
 class Lesson(models.Model):
     course = models.ForeignKey(
         Course,
-        on_delete=models.CASCADE,
-        related_name='lessons'
+        on_delete=models.CASCADE
     )
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -49,11 +48,22 @@ class Question(models.Model):
         on_delete=models.CASCADE,
         related_name='questions'
     )
-    question_text = models.CharField(max_length=500)
+    question_text = models.TextField()
     grade = models.IntegerField(default=1)
 
     def __str__(self):
         return self.question_text
+
+    def is_get_score(self, selected_ids):
+        correct_choices = self.choices.filter(is_correct=True)
+        selected_correct = correct_choices.filter(
+            id__in=selected_ids
+        )
+
+        return (
+            correct_choices.count() > 0
+            and correct_choices.count() == selected_correct.count()
+        )
 
 
 class Choice(models.Model):
@@ -62,19 +72,35 @@ class Choice(models.Model):
         on_delete=models.CASCADE,
         related_name='choices'
     )
-    choice_text = models.CharField(max_length=500)
+    choice_text = models.CharField(max_length=100)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
         return self.choice_text
 
 
+class Enrollment(models.Model):
+    learner = models.ForeignKey(
+        Learner,
+        on_delete=models.CASCADE
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f"{self.learner} - {self.course}"
+
+
 class Submission(models.Model):
-    learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
-    exam = models.ForeignKey(Course, on_delete=models.CASCADE)
+    enrollment = models.ForeignKey(
+        Enrollment,
+        on_delete=models.CASCADE
+    )
     choices = models.ManyToManyField(Choice)
     total_score = models.IntegerField(default=0)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.learner} - {self.exam}"
+        return f"{self.enrollment} - {self.total_score}"
