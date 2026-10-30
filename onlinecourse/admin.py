@@ -20,16 +20,26 @@ class QuestionInline(admin.StackedInline):
     extra = 1
 
 
+class LessonInline(admin.StackedInline):
+    model = Lesson
+    extra = 1
+
+
+class CourseAdmin(admin.ModelAdmin):
+    inlines = [LessonInline]
+
+
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [ChoiceInline]
+    list_display = ('question_text',)
 
 
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title", "course")
-    list_filter = ("course",)
+    list_display = ('title', 'course')
+    list_filter = ('course',)
 
 
-admin.site.register(Course)
+admin.site.register(Course, CourseAdmin)
 admin.site.register(Instructor)
 admin.site.register(Learner)
 admin.site.register(Lesson, LessonAdmin)
