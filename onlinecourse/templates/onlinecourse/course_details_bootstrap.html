@@ -34,25 +34,21 @@
 
             <div class="list-group mt-3">
 
-                {% for lesson in course.lessons.all %}
+               {% for lesson in course.lesson_set.all %}
 
-                    <div class="list-group-item">
-                        <h5 class="mb-1">
-                            {{ lesson.title }}
-                        </h5>
+    <div class="list-group-item">
+        <h5 class="mb-1">{{ lesson.title }}</h5>
 
-                        <p class="mb-1">
-                            {{ lesson.content }}
-                        </p>
-                    </div>
+        <p class="mb-1">{{ lesson.content }}</p>
+    </div>
 
-                {% empty %}
+{% empty %}
 
-                    <div class="alert alert-info">
-                        No lessons available.
-                    </div>
+    <div class="alert alert-info">
+        No lessons available.
+    </div>
 
-                {% endfor %}
+{% endfor %}
 
             </div>
 
